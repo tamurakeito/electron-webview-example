@@ -1,25 +1,92 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, screen } from "electron";
 import { exec, ChildProcess } from "child_process";
 import waitOn from "wait-on";
 
-let mainWindow: BrowserWindow | null;
+let mainWindow1: BrowserWindow | null;
+let mainWindow2: BrowserWindow | null;
+let mainWindow3: BrowserWindow | null;
+let mainWindow4: BrowserWindow | null;
+let mainWindow5: BrowserWindow | null;
+
 let serveProcess: ChildProcess | null = null;
 
 const createWindow = () => {
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const { width, height } = primaryDisplay.workAreaSize;
+  mainWindow1 = new BrowserWindow({
+    width: width - 200,
+    height: 100,
+    x: 0,
+    y: 0,
+    frame: false,
+    useContentSize: true,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+  mainWindow2 = new BrowserWindow({
+    width: 300,
+    height: height - 100,
+    x: 0,
+    y: 150,
+    frame: false,
+    useContentSize: true,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+  mainWindow3 = new BrowserWindow({
+    width: (width - 500) / 2,
+    height: height - 100,
+    x: 300,
+    y: 150,
+    frame: false,
+    useContentSize: true,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+  mainWindow4 = new BrowserWindow({
+    width: (width - 500) / 2,
+    height: height - 100,
+    x: (width - 500) / 2 + 300,
+    y: 150,
+    frame: false,
+    useContentSize: true,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+  mainWindow5 = new BrowserWindow({
+    width: 200,
+    height: height,
+    x: width - 200,
+    y: 0,
+    frame: false,
+    useContentSize: true,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
     },
   });
 
-  mainWindow.loadURL("http://localhost:5827");
+  mainWindow1.loadURL("http://localhost:5827");
+  mainWindow2.loadURL("http://localhost:5827");
+  mainWindow3.loadURL("http://localhost:5827");
+  mainWindow4.loadURL("http://localhost:5827");
+  mainWindow5.loadURL("http://localhost:5827");
 
   // ウィンドウが閉じられたときの処理
-  mainWindow.on("closed", () => {
-    mainWindow = null;
+  const closeWindows = () => {
+    mainWindow1 = null;
+    mainWindow2 = null;
+    mainWindow3 = null;
+    mainWindow4 = null;
+    mainWindow5 = null;
 
     // serve プロセスが実行中であれば停止する
     if (serveProcess) {
@@ -28,7 +95,13 @@ const createWindow = () => {
 
     // アプリケーションを終了させる
     app.quit();
-  });
+  };
+
+  mainWindow1.on("closed", closeWindows);
+  mainWindow2.on("closed", closeWindows);
+  mainWindow3.on("closed", closeWindows);
+  mainWindow4.on("closed", closeWindows);
+  mainWindow5.on("closed", closeWindows);
 };
 
 // アプリケーションの準備ができたらウィンドウを作成
